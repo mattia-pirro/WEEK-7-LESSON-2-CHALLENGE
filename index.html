@@ -65,10 +65,25 @@
     <section class="lista-section pt-2">
       <div class="lista-header d-flex justify-content-between align-items-center pb-1">
         <h2 class="fs-3 fw-bold mb-0">I tuoi libri (<span id="contatore">0</span>)</h2>
-        <button id="svuota-tutto" class="btn-svuota btn btn-outline-danger">Svuota tutto</button>
+        <div class="d-flex gap-2">
+          <button id="esporta-tutto" class="btn-esporta btn btn-outline-dark">Esporta</button>
+          <button id="svuota-tutto" class="btn-svuota btn btn-outline-danger">Svuota tutto</button>
+        </div>
       </div>
 
-      <p class="info-storage my-2 fst-italic text-muted">I libri sono salvati nel browser e sopravvivono al refresh.</p>
+      <p class="info-storage mt-2 mb-3 fst-italic text-muted">I libri sono salvati nel browser e sopravvivono al
+        refresh.</p>
+
+      <div class="d-flex gap-2 justify-content-start align-items-center mb-4">
+        <button type="button" class="filtri btn btn-dark" selected>Tutti</button>
+        <button type="button" class="filtri btn btn-outline-dark">Letti</button>
+        <button type="button" class="filtri btn btn-outline-dark">Da leggere</button>
+        <select class="ordina form-select" id="ordinamento" name="ordinamento">
+          <option value=""></option>
+          <option value="Titolo">Titolo</option>
+          <option value="Anno">Anno</option>
+        </select>
+      </div>
 
       <ul id="lista-libri" class="list-unstyled d-flex flex-column gap-2"></ul>
     </section>

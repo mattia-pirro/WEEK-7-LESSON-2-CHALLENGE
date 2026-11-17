@@ -51,10 +51,28 @@ const campoDurata = document.getElementById("campo-durata");
 const formLibro = document.getElementById("aggiungi-libro");
 const listaLibri = document.getElementById("lista-libri");
 const svuota = document.getElementById("svuota-tutto");
+const esporta = document.getElementById("esporta-tutto");
+const filtri = document.querySelectorAll(".filtri");
+const ordinamento = document.getElementById("ordinamento");
+let categorySelected = "Tutti";
 let libri = caricaLibri();
 
 function renderLibri() {
-  const righe = libri.map((l) => {
+  let libriFiltrati = [];
+
+  if (categorySelected === "Tutti") {
+    libriFiltrati = libri;
+  } else if (categorySelected === "Letti") {
+    libriFiltrati = libri.filter(function (libro) {
+      return libro.letto === true;
+    });
+  } else if (categorySelected === "Da leggere") {
+    libriFiltrati = libri.filter(function (libro) {
+      return libro.letto === false;
+    });
+  }
+
+  const righe = libriFiltrati.map((l) => {
     const li = document.createElement("li");
     li.className =
       "libro d-flex justify-content-between align-items-center gap-3 bg-white rounded shadow-sm p-3";
@@ -111,7 +129,7 @@ function renderLibri() {
   });
 
   document.getElementById("lista-libri").replaceChildren(...righe);
-  document.getElementById("contatore").textContent = libri.length;
+  document.getElementById("contatore").textContent = libriFiltrati.length;
 }
 
 selectFormato.addEventListener("change", (e) => {
@@ -177,6 +195,46 @@ svuota.addEventListener("click", () => {
   renderLibri();
 });
 
+esporta.addEventListener("click", () => {
+  window.open(
+    "data:application/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(libri, null, 2)),
+  );
+});
+
+console.log("click esporta", libri);
+
+filtri.forEach(function (button) {
+  button.addEventListener("click", function () {
+    filtri.forEach(function (btn) {
+      btn.classList.remove("selected", "btn-dark");
+      btn.classList.add("btn-outline-dark");
+    });
+
+    button.classList.add("selected", "btn-dark");
+    button.classList.remove("btn-outline-dark");
+
+    categorySelected = button.textContent.trim();
+    salvaLibri();
+    renderLibri();
+  });
+});
+
+ordinamento.addEventListener("change", (e) => {
+  if (e.target.value === "Titolo") {
+    libri = libri.toSorted(
+      (a, b) =>
+        (a.titolo.toLowerCase() > b.titolo.toLowerCase()) -
+        (a.titolo.toLowerCase() < b.titolo.toLowerCase()),
+    );
+  } else if (e.target.value === "Anno") {
+    libri = libri.toSorted((a, b) => a.anno - b.anno);
+  }
+
+  salvaLibri();
+  renderLibri();
+});
+
 function salvaLibri() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(libri));
 }
@@ -194,3 +252,5 @@ function caricaLibri() {
     }
   });
 }
+
+renderLibri();
